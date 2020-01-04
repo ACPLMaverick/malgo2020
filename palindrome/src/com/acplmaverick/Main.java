@@ -80,8 +80,6 @@ public class Main {
             }
         }
 
-        // Palindromic not found - code should not get here,
-        // but we still need to return a value in all control paths.
         return max_palindrome;
     }
 
