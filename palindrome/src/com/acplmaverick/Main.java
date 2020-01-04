@@ -67,7 +67,7 @@ public class Main {
 
         for(int i = maxValue; i >= minValue; --i)
         {
-            for(int j = maxValue; j >= minValue; --j)
+            for(int j = maxValue; j >= i /*Optimization - we don't actually need to go below i*/; --j)
             {
                 final int number = i * j;
                 if(naive_is_palindromic(number))
