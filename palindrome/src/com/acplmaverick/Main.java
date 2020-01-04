@@ -1,13 +1,18 @@
 package com.acplmaverick;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Main {
 
     // ++ Naive implementation.
 
-    private static boolean naive_is_palindromic(ArrayList<Integer> digits)
+    private static boolean naive_is_palindromic(int number)
+    {
+        final ArrayList<Integer> digits = naive_get_digits_from_decimal_number(number);
+        return naive_are_digits_palindromic(digits);
+    }
+
+    private static boolean naive_are_digits_palindromic(ArrayList<Integer> digits)
     {
         // Some pre-computation checks.
         if(digits == null || digits.size() % 2 != 0)
@@ -51,7 +56,7 @@ public class Main {
         return digits;
     }
 
-    private static int compute_palindrome_naive(int maxValue)
+    private static int compute_palindrome_naive(final int minValue, final int maxValue)
     {
         // We iterate from maximum possible values in descending order.
         // This way we will find the desired palindrome faster.
@@ -60,13 +65,12 @@ public class Main {
 
         int max_palindrome = -1;
 
-        for(int i = maxValue; i >= 1 /*No need to include zero.*/; --i)
+        for(int i = maxValue; i >= minValue; --i)
         {
-            for(int j = maxValue; j >= 1; --j)
+            for(int j = maxValue; j >= minValue; --j)
             {
                 final int number = i * j;
-                final ArrayList<Integer> digits = naive_get_digits_from_decimal_number(number);
-                if(naive_is_palindromic(digits))
+                if(naive_is_palindromic(number))
                 {
                     if(number > max_palindrome)
                     {
@@ -85,7 +89,8 @@ public class Main {
 
     public static void main(String[] args)
     {
-        final int palindrome = compute_palindrome_naive(999);
+        // Giving 100 and 999 as min and max, we limit search only to six-digit numbers.
+        final int palindrome = compute_palindrome_naive(100, 999);
         System.out.printf("Largest three-digit palindrome: %d%n", palindrome);
     }
 }
