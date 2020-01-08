@@ -4,6 +4,87 @@ import java.util.ArrayList;
 
 public class Main {
 
+    // ++ Pro implementation.
+
+    /*
+    Solution is more thoroughly described here:
+    https://www.xarg.org/puzzle/project-euler/problem-4/
+
+    First observation is that the number must be between 100^2 and 999^2
+    or in the range of [10000,998001][10000, 998001][10000,998001].
+    As the majority of numbers has 6 digits and we're looking for the largest, we ignore 5 digits numbers.
+    Based on this, we can construct a palindromic number as:
+
+    ′abccba′    = 100000a + 10000b + 1000c + 100c + 10b + a
+                = 100001a + 10010b + 1100c
+                = 11(9091a + 910b + 100c)
+
+    As such, we're looking for two largest numbers
+    p,q ∈ {x∣100 ≤ x ≤ 999} ⊂ N with:
+    p*q = 11(9091a + 910b + 100c) ≤ 999^2
+
+    This equation shows us, that either p or q, but not both must have a factor of 11.
+     */
+
+    private static boolean pro_is_palindromic(int number)
+    {
+        var reversedNumber = 0;
+        final var originalNumber = number;
+
+        while(number > 0)
+        {
+            // A simpler implementation. To compute reversedNumber each step of the loop we simply
+            // a) add number % 10 - which yields last digit of the number
+            // b) multiply reversedNumber by 10, "advancing" its digits by one magnitude level
+            // c) divide number by ten to obtain the next digit in the next loop step
+
+            reversedNumber = reversedNumber * 10 + number % 10;
+            number = number / 10;
+        }
+
+        // A number is a palindromic number if this comparison yields true.
+        return reversedNumber == originalNumber;
+    }
+
+    private static int compute_palindrome_pro()
+    {
+        int palindrome = 0;
+
+        // So, we know that one of the numbers must be divisible by 11.
+        // We take p as divisible by 11 so we iterate from the maximum possible multiplication of 11 (990)
+        // to the minimum possible with the step of 11 - this way we check only multiplications of 11.
+        for(int p = 990; p > 99; p -= 11)
+        {
+            // We can make no such assumptions for q, so we need to iterate through full range [999;100].
+            // However, we make a few useful optimizations inside the loop.
+            for(int q = 999; q > 99; --q)
+            {
+                // Compute the multiplication of two three-digit numbers.
+                final int number = p * q;
+                // If number is a palindrome AND is bigger than one stored in "palindrome" variable - assign it.
+                if(palindrome < number && pro_is_palindromic(number))
+                {
+                    palindrome = number;
+                    break;  // We iterate descending, so there won't be higher results for this p.
+                            // We can break from the inner loop safely.
+                }
+                else if(number < palindrome)
+                {
+                    // If the result of the multiplication is smaller than the one stored in "palindrome" variable
+                    // We can safely assume that there will not be any bigger for this p (same reason as above).
+                    // We can break from the inner loop safely.
+                    break;
+                }
+            }
+        }
+
+        return palindrome;
+    }
+
+    // -- Pro implementation.
+
+    // ****************************************************************
+
     // ++ Naive implementation.
 
     private static boolean naive_is_palindromic(int number)
@@ -85,10 +166,15 @@ public class Main {
 
     // -- Naive implementation.
 
+    // ****************************************************************
+
     public static void main(String[] args)
     {
         // Giving 100 and 999 as min and max, we limit search only to six-digit numbers.
-        final int palindrome = compute_palindrome_naive(100, 999);
+        //final int palindrome = compute_palindrome_naive(100, 999);
+
+        final int palindrome = compute_palindrome_pro();
+
         System.out.printf("Largest three-digit palindrome: %d%n", palindrome);
     }
 }
