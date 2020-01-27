@@ -48,6 +48,9 @@ public class Main
 
         System.out.println(bar(5));
 
+        float v = 5 / 2;
+        System.out.println(v);
+
         //funkcja(a);
     }
 }
