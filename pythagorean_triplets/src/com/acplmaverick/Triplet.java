@@ -2,6 +2,9 @@ package com.acplmaverick;
 
 class Triplet
 {
+    // Static const class variable
+    private static final int SUM = 1000;
+
     // Class Members
     public final int a;
     public final int b;
@@ -15,7 +18,15 @@ class Triplet
         c = 0;
     }
 
-    // Constructor with arguments
+    // Constructor with two arguments - uses the fact that a+b+c = 1000 to compute c automatically.
+    public Triplet(int a_a, int a_b)
+    {
+        a = a_a;
+        b = a_b;
+        c = SUM - a - b;
+    }
+
+    // Constructor with three arguments
     public Triplet(int a_a, int a_b, int a_c)
     {
         a = a_a;
@@ -31,7 +42,7 @@ class Triplet
 
     public boolean is_end_condition()
     {
-        return (a + b + c) == 1000;
+        return (a + b + c) == SUM;
     }
 
     public void print()
