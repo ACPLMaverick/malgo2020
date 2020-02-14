@@ -29,6 +29,7 @@ public class Main
 
     public static void main(String[] args)
     {
+        /*
         int a = 5;
 
         boolean val = false;
@@ -52,5 +53,14 @@ public class Main
         System.out.println(v);
 
         //funkcja(a);
+        */
+
+        byte vByte = (byte)-1;
+        char vChar = (char)vByte;
+
+        System.out.println("vByte:");
+        System.out.println(vByte);
+        System.out.println("vChar:");
+        System.out.println((int)vChar);
     }
 }
