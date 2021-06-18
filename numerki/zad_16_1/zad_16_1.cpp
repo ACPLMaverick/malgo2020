@@ -61,6 +61,9 @@ private:
         // a = sum_2 / sum_1
         // b = med_y - a * med_x
 
+        // Also helpful:
+        // https://www.socscistatistics.com/tests/regression/default.aspx
+
         const data_element med = calculate_median(input);
         const size_t num = input.size();
 
@@ -95,19 +98,23 @@ private:
     static data_element calculate_median(const table_data& input)
     {
         const size_t num = input.size();
-        const size_t num_div_two = num / 2;
-        const bool is_odd_num = num % 2 != 0;
-        if(is_odd_num)
+        data_element accumulator{ 0.0f, 0.0f };
+        if(num == 0)
         {
-            return input[num_div_two];
+            // Invalid value.
+            return accumulator;
         }
-        else
+
+        for(size_t i = 0; i < num; ++i)
         {
-            data_element element;
-            element.x = (input[num_div_two].x + input[num_div_two + 1].x) * 0.5f;
-            element.y = (input[num_div_two].y + input[num_div_two + 1].y) * 0.5f;
-            return element;
+            accumulator.x += input[i].x;
+            accumulator.y += input[i].y;   
         }
+
+        const float num_rec = 1.0f / static_cast<float>(num);
+        accumulator.x *= num_rec;
+        accumulator.y *= num_rec;
+        return accumulator;
     }
 
     float m_a;
