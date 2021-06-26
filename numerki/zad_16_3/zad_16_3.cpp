@@ -1,49 +1,66 @@
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
-float function(float x)
+double function(double x)
 {
-    return 2.0f * ((1.0f / (1.0f + x * x)) + (1.0f / (2.0f * x)) - (3.0f * x * x * x));
+    return 2.0 * ((1.0 / (1.0 + x * x)) + (1.0 / (2.0 * x)) - (3.0 * x * x * x));
 }
 
-float integrate_rectangles(const float x_min, const float x_max, const float result_analytic,
-    const float eps, int& out_num_iterations)
+bool compare(double result, double result_analytic, double eps, int num_iterations, const char* method_name)
 {
-    // TODO
-    return 1.0f;
-}
-
-float integrate_simpson(const float x_min, const float x_max, const float result_analytic,
-    const float eps, int& out_num_iterations)
-{
-    // TODO
-    return 1.5;
-}
-
-void compare(float result, float result_analytic, int num_iterations, const char* method_name)
-{
-    const float error = fabsf(result - result_analytic);
+    const double error = fabs(fabs(result) - fabs(result_analytic));
     std::cout << "Method : [" << method_name << "], Result : [" << result << "], Error : ["
             << error << "], Num iterations : [" << num_iterations << "]\n";
+    return error <= eps;
+}
+
+void integrate_rectangles(const double x_min, const double x_max, const double result_analytic,
+    const double eps)
+{
+    // http://theflyingkeyboard.net/algorithms/midpoint-rule-rectangle-method-algorithm/
+    double result = 0.0;
+    int num_iterations = 1;
+    bool is_exact = false;
+
+    do
+    {
+        // Calculate sum(f(m_i))
+        double sum = 0.0;
+        const double length = x_max - x_min;
+        for(int i = 1; i <= num_iterations; ++i)    // <1, n>
+        {
+            double m_i = x_min + ((2.0 * (double)i - 1.0) / (2.0 * (double)num_iterations)) * length;
+            sum += function(m_i);
+        }
+
+        // Multiply by (b - a) / n
+        result = (length / (double)num_iterations) * sum;
+
+        is_exact = compare(result, result_analytic, eps, num_iterations, "Rectangles");
+        ++num_iterations;
+    } while (is_exact == false);
+}
+
+void integrate_simpson(const double x_min, const double x_max, const double result_analytic,
+    const double eps)
+{
+
 }
 
 int main(int argc, const char** argv)
 {
-    static const float x_min = 1.0f;
-    static const float x_max = 5.0f;
-    static const float eps = powf(10.0f, -4.0f);
-    static const float result_analytic = 0.0f; // TODO
+    static const double x_min = 1.0;
+    static const double x_max = 5.0;
+    static const double eps = 0.0001;
+    static const double result_analytic = -933.21455688047076;
 
-    int num_iterations_rectangles = 0;
-    int num_iterations_simpson = 0;
+    std::cout << std::fixed << std::setprecision(15);   // Setting up cout.
 
     std::cout << "Analytic result : [" << result_analytic << "]\n";
 
-    float result_rectangles = integrate_rectangles(x_min, x_max, result_analytic, eps, num_iterations_rectangles);
-    float result_simpson = integrate_simpson(x_min, x_max, result_analytic, eps, num_iterations_simpson);
-
-    compare(result_rectangles, result_analytic, num_iterations_rectangles, "Rectangles");
-    compare(result_simpson, result_analytic, num_iterations_simpson, "Simpson");
+    integrate_rectangles(x_min, x_max, result_analytic, eps);
+    integrate_simpson(x_min, x_max, result_analytic, eps);
 
     return 0;
 }
